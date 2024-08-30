@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<!--From https://codepen.io/frytyler/pen/EGdtg-->
+<head>
+  <meta charset="UTF-8">
+  <title>ML API</title>
+  
+<link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+
+<link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+
+<link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+
+<link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+    html, body {
+    height: 100%;
+    margin: 0;
+    overflow: auto;
+    }
+    .Login {
+    max-height: 100vh; /* Full viewport height */
+    overflow-y: auto; /* Enable vertical scrolling */APIpadding: 20px;
+    box-sizing: border-box;
+    }
+
+    .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    }
+
+    .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    
+    }
+
+    .btn-container {
+    margin-top: 20px;
+    align: center; 
+    }
+
+    .btn-container button {
+    width: 150px; 
+    padding: 10px; 
+    background-color: #007bff; 
+    color: #fff; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer;  
+    font-size: 16px; 
+    }
+
+
+    
+ </style>
+
+</head>
+
+<body>
+ 
+<div class="login">
+	<h1>PREDICTION OF ATTRITION</h1>
+
+     <!-- Main Input For Receiving Query to our ML -->
+ 
+   <form action="{{ url_for('predict') }}" method="post">
+    <div class="form-group">
+      <label for="age">Age</label>
+      <input type="text" id="age" name="Age"  required="required" size="30" />
+    </div>
+    <div class="form-group">
+      <label for="BusinessTravel">Business Travel</label>
+      <select id="BusinessTravel" name="BusinessTravel" required="required">
+        <option value="" disabled selected>Select Business Travel</option>
+        <option value="Travel_Rarely">Travel Rarely</option>
+        <option value="Travel_Frequently">Travel Frequently</option>
+        <option value="Non-Travel">Non-Travel</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="daily rate">Daily Rate</label>
+     <input type="text" id="daily rate" name="DailyRate"  required="required" />
+    </div>
+
+    <div class="form-group">
+      <label for="Department">Department</label>
+      <select id="Department" name="Department" required="required">
+        <option value="" disabled selected>Select Department</option>
+        <option value="Sales">Sales</option>
+        <option value="Research & Development">Research & Development</option>
+        <option value="Human Resources">Human Resources</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="DistanceFromHome">Distance From Home (Km)</label>
+      <input type="text" id="distance-from-home" name="DistanceFromHome"  required="required" />
+    </div>
+    <div class="form-group">
+    <label for="EducationLevel"> Education Level</label>
+      <select id="EducationLevel" name="EducationLevel" required="required">
+        <option value="" disabled selected>Select Education Level</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="4">5</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label for="EducationField">EducationField</label>
+      <select id="EducationField" name="EducationField" required="required">
+        <option value="" disabled selected>Select Education Field</option>
+        <option value="Marketing">Marketing</option>
+        <option value="Life Sciences">Life Sciences</option>
+        <option value="Technical Degree">Technical Degree</option>
+        <option value="Medical">Medical</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="environment-satisfaction">Environment Satisfaction</label>
+      <select id="environment-satisfaction" name="EnvironmentSatisfaction" required="required">
+        <option value="" disabled selected>Select Environment Satisfaction</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="gender">Gender</label>
+      <select id="gender" name="Gender" required="required">
+        <option value="" disabled selected>Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="HourlyRate">Hourly Rate (1-100)</label>
+      <input type="text" id="hourly-rate" name="HourlyRate"  required="required" />
+    </div>
+    
+    <div class="form-group">
+      <label for="JobInvolvement">Job Involvement</label>
+      <select id="JobInvolvement" name="JobInvolvement" required="required">
+        <option value="" disabled selected>Select Job Involvement</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="JobLevel">Job Level</label>
+      <select id="JobLevel" name="JobLevel" required="required">
+        <option value="" disabled selected>Select Job Level</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="4">5</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="JobRole">Job Role</label>
+      <select id="JobRole" name="JobRole" required="required">
+        <option value="" disabled selected>Select Job Role</option>
+        <option value="Sales Executive">Sales Executive</option>
+        <option value="Research Scientist">Research Scientist</option>
+        <option value="Laboratory Technician">Laboratory Technician</option>
+        <option value="Manufacturing Director">Manufacturing Director</option>
+        <option value="Healthcare Representative">Healthcare Representative</option>
+        <option value="Manager">Manager</option>
+        <option value="Sales Representative">Sales Representative</option>
+        <option value="Human Resources">Human Resources</option>
+        <option value="Research Director">Research Director</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="job-satisfaction">Job Satisfaction</label>
+      <select id="job-satisfaction" name="JobSatisfaction" required="required">
+        <option value="" disabled selected>Select Job Satisfaction</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="marital-status">Marital Status</label>
+      <select id="marital-status" name="MaritalStatus" required="required">
+        <option value="" disabled selected>Select Marital Status</option>
+        <option value="Single">Single</option>
+        <option value="Married">Married</option>
+        <option value="Divorced">Divorced</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="monthly-income">Monthly Income</label>
+      <input type="text" id="monthly-income" name="MonthlyIncome"  required="required" />
+    </div>
+    
+    <div class="form-group">
+      <label for="monthly-rate">Monthly Rate</label>
+      <input type="text" id="monthly-rate" name="MonthlyRate" required="required" />
+    </div>
+    <div class="form-group">
+      <label for="NumCompaniesWorked">Number of Companies Worked</label>
+      <input type="text" id="NumCompaniesWorked" name="NumCompaniesWorked" required="required" />
+    </div>
+    <div class="form-group">
+      <label for="Over18">Over 18 </label>
+      <select id="Over18" name="Over18" required="required">
+        <option value="" disabled selected>Select Yes or No</option>
+        <option value="Y">Yes</option>
+        <option value="N">No</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="overtime">Over Time</label>
+      <select id="overtime" name="OverTime" required="required">
+        <option value="" disabled selected>Select Over Time</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="Percent-salary-hike">Percent salary Hike (in %)</label>
+      <input type="text" id="PercentSalaryHike" name="PercentSalaryHike"  required="required" />
+    </div>
+    <div class="form-group">
+      <label for="PerformanceRating">Performance Rating</label>
+      <select id="PerformanceRating" name="PerformanceRating" required="required">
+        <option value="" disabled selected>Select Performance Rating</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="RelationshipSatisfaction">Relationship Satisfaction</label>
+      <select id="RelationshipSatisfaction" name="RelationshipSatisfaction" required="required">
+        <option value="" disabled selected>Select Relationship Satisfaction</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="StandardHours">Standard Hours</label>
+      <select id="StandardHours" name="StandardHours" required="required">
+        <option value="" disabled selected>Select StandardHours</option>
+        <option value="80">80</option>
+
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="StockOptionLevel">Stock Option Level</label>
+      <select id="StockOptionLevel" name="StockOptionLevel" required="required">
+        <option value="" disabled selected>Select Stock Option Level</option>
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+      </select>
+    </div>
+    
+
+    <div class="form-group">
+      <label for="total-working-years">Total Working Years</label>
+      <input type="text" id="total-working-years" name="TotalWorkingYears"  required="required" />
+    </div>
+    <div class="form-group">
+      <label for="TrainingTimesLastYear">Number of Trainings Last Year</label>
+      <input type="text" id="TrainingTimesLastYear" name="TrainingTimesLastYear"  required="required" />
+    </div>
+    <div class="form-group">
+      <label for="work-life-balance">Work Life Balance</label>
+      <select id="work-life-balance" name="WorkLifeBalance" required="required">
+        <option value="" disabled selected>Select Work Life Balance</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="YearsAtCompany">Years At Company</label>
+      <input type="text" id="YearsAtCompany" name="YYearsAtCompany"  required="required" />
+    </div>
+
+    <div class="form-group">
+      <label for="years-in-current-role">Years In Current Role</label>
+      <input type="text" id="years-in-current-role" name="YearsInCurrentRole"  required="required" />
+    </div>
+    <div class="form-group">
+      <label for="years-since-last-promotion">Years Since Last Promotion</label>
+      <input type="text" id="years-since-last-promotion" name="YearsSinceLastPromotion"  required="required" />
+    </div>
+     <div class="form-group">
+       <label for="years-with-curr-manager">Years With Current Manager</label>
+       <input type="text" id="years-with-curr-manager" name="YearsWithCurrManager" required="required" />
+     </div>
+    
+
+    <div class="btn-container">
+      <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+    </div>
+  </form>
+  
+
+   <br>
+   <br>
+   {{ prediction_text }}
+
+ </div>
+
+
+</body>
+</html>
+
